@@ -1,4 +1,4 @@
-from app.agent import DogChatAgent
+from app.agents.agent import DogChatAgent
 
 def main():
     thread_id = "abc123"
