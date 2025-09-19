@@ -3,9 +3,18 @@ from pydantic import BaseModel
 from typing import Optional
 from uuid import uuid4
 from app.agents.agent import DogChatAgent
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 agent = DogChatAgent()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Or specify your frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class ChatRequest(BaseModel):
     content: str
