@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import ReactMarkdown from "react-markdown";
 
 const API_URL = "http://127.0.0.1:8000/chat";
 
@@ -57,7 +58,11 @@ function App() {
                 className={`p-3 rounded-4 shadow-sm ${msg.role === "user" ? "bg-primary text-white" : "bg-success text-white"}`}
                 style={{ maxWidth: "60%", fontSize: "0.95rem" }}
               >
-                {msg.content}
+                {msg.role === "agent" ? (
+                  <ReactMarkdown>{msg.content}</ReactMarkdown>
+                ) : (
+                  msg.content
+                )}
               </div>
             </div>
           ))}
