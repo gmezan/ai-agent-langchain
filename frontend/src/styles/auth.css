@@ -1,0 +1,21 @@
+/* Auth / Google button theme bridging for dark mode.
+   This gently adapts the official button container without violating Google brand areas.
+   Only surface background & border shade are adjusted; icon area kept intact. */
+
+/* Scope to dark theme root */
+[data-bs-theme='dark'] .gsi-material-button {
+  background-color: #1f1f1f !important; /* match dark body */
+  border-color: #343a40 !important;
+  color: #fff !important;
+}
+[data-bs-theme='dark'] .gsi-material-button:hover {
+  background-color: #272727 !important;
+}
+/* Ensure inner icon retains contrast */
+[data-bs-theme='dark'] .gsi-material-button .gsi-material-button-icon {
+  background-color: #fff !important;
+}
+/* Text span adaptation */
+[data-bs-theme='dark'] .gsi-material-button .gsi-material-button-content span {
+  color: #fff !important;
+}

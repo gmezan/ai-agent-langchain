@@ -30,10 +30,8 @@ export const LoginButton = ({ onLogin, themeMode = 'light' }: LoginButtonProps) 
       onError={handleError}
       theme={googleTheme as any}
       shape="pill"
-      text="signin"
       size="medium"
       logo_alignment="left"
-      width="200"
     />
   )
 }
