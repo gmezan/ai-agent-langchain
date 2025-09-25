@@ -13,13 +13,25 @@ function App() {
 
   const handleSuccess = (userData: User) => { setUser(userData) }
   const handleLogout = () => setUser(null)
+  const [theme, setTheme] = React.useState<'light' | 'dark'>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('ui.theme')
+      if (stored === 'light' || stored === 'dark') return stored
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark'
+    }
+    return 'light'
+  })
+  React.useEffect(() => {
+    try { localStorage.setItem('ui.theme', theme) } catch { /* ignore */ }
+  }, [theme])
+  const toggleTheme = () => setTheme(t => t === 'light' ? 'dark' : 'light')
 
   return (
-    <div className="d-flex flex-column min-vh-100 bg-light">
-      <ChatNavbar user={user} onLogin={handleSuccess} onLogout={handleLogout} />
+    <div className="d-flex flex-column min-vh-100 bg-body" data-bs-theme={theme}>
+      <ChatNavbar user={user} onLogin={handleSuccess} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} />
 
       {/* Main chat area: centered horizontally, fills remaining viewport height with padding */}
-      <div className="flex-grow-1 d-flex justify-content-center bg-light p-3">
+  <div className="flex-grow-1 d-flex justify-content-center p-3">
         <ChatCard
           messages={messages}
           input={input}

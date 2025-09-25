@@ -9,17 +9,28 @@ export interface ChatNavbarProps {
   user: User | null
   onLogin(user: User): void
   onLogout(): void
+  theme: 'light' | 'dark'
+  onToggleTheme(): void
 }
 
-export const ChatNavbar: React.FC<ChatNavbarProps> = ({ user, onLogin, onLogout }) => {
+export const ChatNavbar: React.FC<ChatNavbarProps> = ({ user, onLogin, onLogout, theme, onToggleTheme }) => {
+  const dark = theme === 'dark'
   return (
-    <Navbar bg="white" className="shadow-sm" expand="md" sticky="top">
+    <Navbar bg={dark ? 'dark' : 'light'} variant={dark ? 'dark' : 'light'} data-bs-theme={theme} className="shadow-sm" expand="md" sticky="top">
       <Container fluid="lg">
         <Navbar.Brand className="fw-semibold d-flex align-items-center gap-2">
           <span role="img" aria-label="dog">🐶</span>
           Dog<span className="text-primary">Chat</span>Agent
         </Navbar.Brand>
         <div className="ms-auto d-flex align-items-center gap-3">
+          <Button
+            variant={dark ? 'outline-light' : 'outline-secondary'}
+            size="sm"
+            onClick={onToggleTheme}
+            aria-label="Toggle dark mode"
+          >
+            {dark ? '🌞' : '🌙'}
+          </Button>
           {user ? (
             <>
               {user.picture && (
@@ -32,8 +43,8 @@ export const ChatNavbar: React.FC<ChatNavbarProps> = ({ user, onLogin, onLogout 
                   style={{ objectFit: 'cover' }}
                 />
               )}
-              <span className="fw-semibold small d-none d-sm-inline">{user.name}</span>
-              <Button variant="outline-secondary" size="sm" onClick={onLogout}>Sign out</Button>
+              <span className={`fw-semibold small d-none d-sm-inline ${dark ? 'text-light' : 'text-body'}`}>{user.name}</span>
+              <Button variant={dark ? 'outline-light' : 'outline-secondary'} size="sm" onClick={onLogout}>Sign out</Button>
             </>
           ) : (
             <LoginButton onLogin={onLogin} />

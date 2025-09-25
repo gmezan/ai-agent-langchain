@@ -31,7 +31,7 @@ export const ChatCard: React.FC<ChatCardProps> = ({
   const bubbleVariant = (isUser: boolean, hasError: boolean) => {
     if (isUser) return 'bg-primary text-white'
     if (hasError) return 'bg-danger text-white'
-    return 'bg-white border'
+    return 'bg-body-tertiary border'
   }
 
   return (
