@@ -14,6 +14,7 @@ export interface ChatCardProps {
   onInputChange(value: string): void
   onSend(): void
   messagesEndRef: React.RefObject<HTMLDivElement | null>
+  onClear?: () => void
 }
 
 export const ChatCard: React.FC<ChatCardProps> = ({
@@ -23,6 +24,7 @@ export const ChatCard: React.FC<ChatCardProps> = ({
   onInputChange,
   onSend,
   messagesEndRef,
+  onClear,
 }) => {
   const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => { e.preventDefault(); onSend() }
 
@@ -34,8 +36,13 @@ export const ChatCard: React.FC<ChatCardProps> = ({
 
   return (
     <Card className="d-flex flex-column shadow-sm w-100" style={{ maxWidth: '1200px', minHeight: '0' }}>
-      <Card.Header className="border-bottom py-2">
-        <div className="small text-muted">Conversation</div>
+      <Card.Header className="border-bottom py-2 d-flex align-items-center justify-content-between gap-2">
+        <div className="small text-muted m-0">Conversation</div>
+        <div className="d-flex align-items-center gap-2">
+          {onClear && (
+            <Button variant="outline-secondary" size="sm" onClick={onClear} disabled={messages.length === 0}>Clear</Button>
+          )}
+        </div>
       </Card.Header>
       <Card.Body className="d-flex flex-column overflow-hidden">
         <div className="flex-grow-1 overflow-auto pe-2" style={{ scrollBehavior: 'smooth' }}>
