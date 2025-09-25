@@ -23,15 +23,10 @@ export const LoginButton = ({ onLogin, themeMode = 'light' }: LoginButtonProps) 
   }
 
   // Map our app theme to Google button theme; options: outline | filled_blue | filled_black
-  const googleTheme = themeMode === 'dark' ? 'filled_black' : 'outline'
   return (
     <GoogleLogin
       onSuccess={handleSuccess}
       onError={handleError}
-      theme={googleTheme as any}
-      shape="pill"
-      size="medium"
-      logo_alignment="left"
     />
   )
 }
