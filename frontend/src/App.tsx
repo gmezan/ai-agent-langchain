@@ -1,54 +1,35 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import ReactMarkdown from 'react-markdown'
-import { chatService } from './services/api.ts'
 import { LoginButton } from './login/google.tsx'
-import type { AssistantMessage, Message, UserMessage } from './models/message.ts'
+import type { Message } from './models/message.ts'
 import type { User } from './models/user.ts'
+import { useChat } from './hooks/useChat'
+import { assertEnv } from './config/env'
 
 function App() {
-  const [messages, setMessages] = useState<Message[]>([])
-  const [input, setInput] = useState<string>('')
-  const [threadId, setThreadId] = useState<string | null>(null)
-  const messagesEndRef = useRef<HTMLDivElement | null>(null)
-  const [user, setUser] = useState<User | null>(null)
+  assertEnv()
+
+  const { messages, input, sending, setInput, sendMessage, messagesEndRef } = useChat()
+  const [user, setUser] = React.useState<User | null>(null)
 
   const handleSuccess = (userData: User) => {
     console.log('Setting User Data:', userData)
     setUser(userData)
   }
 
-  const handleLogout = () => {
-    setUser(null)
-  }
+  const handleLogout = () => setUser(null)
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
-
-  const sendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault()
-    if (!input.trim()) return
-    const userMsg: UserMessage = { role: 'user', content: input }
-    setMessages((msgs) => [...msgs, userMsg])
-    setInput('')
-    const response = await chatService.sendMessage(input, threadId)
-    if (!response.error) {
-      setThreadId(response.thread_id ?? null)
-    }
-    setMessages((msgs) => [...msgs, response as AssistantMessage])
+    void sendMessage()
   }
 
   return (
-    <div
-      className="vh-100 vw-100 d-flex flex-column justify-content-center align-items-center"
-      style={{ background: 'linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%)' }}
-    >
+    <div className="vh-100 vw-100 d-flex flex-column justify-content-center align-items-center" style={{ background: 'linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%)' }}>
       <div className="w-100" style={{ maxWidth: 900 }}>
         <div className="text-center mb-4">
-          <h1 className="fw-bold" style={{ letterSpacing: 2 }}>
-            DogChatAgent
-          </h1>
+          <h1 className="fw-bold" style={{ letterSpacing: 2 }}>DogChatAgent</h1>
           <p className="text-muted">Your AI dog chat assistant</p>
           {user ? (
             <div>
@@ -60,28 +41,13 @@ function App() {
             <LoginButton onLogin={handleSuccess} />
           )}
         </div>
-        <div
-          className="chat-window border rounded shadow-sm mb-3 bg-white"
-          style={{ height: '65vh', minHeight: '400px', overflowY: 'auto', padding: '2rem' }}
-        >
+        <div className="chat-window border rounded shadow-sm mb-3 bg-white" style={{ height: '65vh', minHeight: '400px', overflowY: 'auto', padding: '2rem' }}>
           {messages.length === 0 && (
             <div className="text-center text-muted">Start the conversation!</div>
           )}
-          {messages.map((msg, idx) => (
-            <div
-              key={idx}
-              className={`d-flex mb-3 ${msg.role === 'user' ? 'justify-content-end' : 'justify-content-start'}`}
-            >
-              <div
-                className={`p-3 rounded-4 shadow-sm ${
-                  msg.role === 'user'
-                    ? 'bg-primary text-white'
-                    : 'error' in msg && msg.error
-                    ? 'bg-danger text-white'
-                    : 'bg-success text-white'
-                }`}
-                style={{ maxWidth: '60%', fontSize: '0.95rem' }}
-              >
+          {messages.map((msg: Message, idx: number) => (
+            <div key={idx} className={`d-flex mb-3 ${msg.role === 'user' ? 'justify-content-end' : 'justify-content-start'}`}>
+              <div className={`p-3 rounded-4 shadow-sm ${msg.role === 'user' ? 'bg-primary text-white' : 'error' in msg && msg.error ? 'bg-danger text-white' : 'bg-success text-white'}`} style={{ maxWidth: '60%', fontSize: '0.95rem' }}>
                 <div>
                   {msg.role === 'assistant' ? (
                     <ReactMarkdown>{msg.content}</ReactMarkdown>
@@ -97,7 +63,7 @@ function App() {
           ))}
           <div ref={messagesEndRef} />
         </div>
-        <form onSubmit={sendMessage} className="d-flex gap-2">
+        <form onSubmit={onSubmit} className="d-flex gap-2">
           <input
             className="form-control"
             type="text"
@@ -107,8 +73,8 @@ function App() {
             autoFocus
             style={{ fontSize: '0.95rem' }}
           />
-          <button className="btn btn-primary px-4" type="submit" style={{ fontSize: '0.95rem' }}>
-            Send
+          <button className="btn btn-primary px-4" type="submit" style={{ fontSize: '0.95rem' }} disabled={sending}>
+            {sending ? 'Sending…' : 'Send'}
           </button>
         </form>
       </div>
