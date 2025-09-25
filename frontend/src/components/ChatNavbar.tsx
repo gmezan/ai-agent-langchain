@@ -47,7 +47,7 @@ export const ChatNavbar: React.FC<ChatNavbarProps> = ({ user, onLogin, onLogout,
               <Button variant={dark ? 'outline-light' : 'outline-secondary'} size="sm" onClick={onLogout}>Sign out</Button>
             </>
           ) : (
-            <LoginButton onLogin={onLogin} />
+            <LoginButton onLogin={onLogin} themeMode={theme} />
           )}
         </div>
       </Container>

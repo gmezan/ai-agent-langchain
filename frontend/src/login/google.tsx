@@ -1,7 +1,12 @@
 import { GoogleLogin, type CredentialResponse } from '@react-oauth/google'
 import { parseGoogleUserFromJwt, type User } from '../models/user'
 
-export const LoginButton = ({ onLogin }: { onLogin?: (user: User) => void }) => {
+export interface LoginButtonProps {
+  onLogin?: (user: User) => void
+  themeMode?: 'light' | 'dark'
+}
+
+export const LoginButton = ({ onLogin, themeMode = 'light' }: LoginButtonProps) => {
   const handleSuccess = (credentialResponse: CredentialResponse) => {
     const token = credentialResponse.credential
     if (!token) return
@@ -17,5 +22,18 @@ export const LoginButton = ({ onLogin }: { onLogin?: (user: User) => void }) => 
     console.error('Login Failed')
   }
 
-  return <GoogleLogin onSuccess={handleSuccess} onError={handleError} />
+  // Map our app theme to Google button theme; options: outline | filled_blue | filled_black
+  const googleTheme = themeMode === 'dark' ? 'filled_black' : 'outline'
+  return (
+    <GoogleLogin
+      onSuccess={handleSuccess}
+      onError={handleError}
+      theme={googleTheme as any}
+      shape="pill"
+      text="signin"
+      size="medium"
+      logo_alignment="left"
+      width="200"
+    />
+  )
 }
