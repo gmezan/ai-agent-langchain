@@ -11,7 +11,11 @@ export async function http<T>(input: RequestInfo, init?: RequestInit): Promise<T
   const isJson = contentType.includes('application/json')
   const data = isJson ? await res.json() : await res.text()
   if (!res.ok) {
-    const message = (isJson && (data as any)?.message) || res.statusText || 'Request failed'
+    let message = res.statusText || 'Request failed'
+    if (isJson && typeof data === 'object' && data !== null && 'message' in data) {
+      const maybeMsg = (data as Record<string, unknown>).message
+      if (typeof maybeMsg === 'string') message = maybeMsg
+    }
     throw new HttpError(res.status, message, data)
   }
   return data as T
