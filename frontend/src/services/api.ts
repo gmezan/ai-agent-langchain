@@ -7,7 +7,7 @@ type ChatResponse = { content: string; thread_id: string }
 export const chatService = {
   async sendMessage(content: string, threadId: string | null): Promise<AssistantMessage> {
     try {
-      const data = await http<ChatResponse>(`${env.API_URL}/chat`, {
+      const data = await http<ChatResponse>(`${env.API_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content, thread_id: threadId }),
