@@ -33,9 +33,9 @@ This project is an advanced AI agent system built with LangChain, integrating th
 	- Python: `pip install -r requirements.txt`
 	- Node.js (for frontend): `cd frontend && npm install`
 2. **Run the API server:**
-	- `uvicorn app.controller.api:app --reload`
+	- `uvicorn controller.api:app --reload`
 3. **Run the CLI client:**
-	- `python -m app.cli_agent`
+	- `python -m cli_agent`
 4. **Run the frontend:**
 	- `cd frontend && npm run dev`
 
