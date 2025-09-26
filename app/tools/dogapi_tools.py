@@ -1,5 +1,5 @@
 from langchain_core.tools import tool
-from app.apis.dogapi_client import DogApiClient
+from apis.dogapi_client import DogApiClient
 
 dogapi_client = DogApiClient()
 

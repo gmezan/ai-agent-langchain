@@ -1,4 +1,4 @@
-from app.utils.webclient import WebClient
+from utils.webclient import WebClient
 from typing import Any, Dict, Optional, Union
 
 class DogApiClient(WebClient):

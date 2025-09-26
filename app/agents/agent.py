@@ -3,10 +3,10 @@ from langchain.chat_models import init_chat_model
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
 
-from app.tools.dogapi_tools import list_dog_breeds, get_dog_breed, list_dog_facts, list_dog_groups, get_dog_group
+from tools.dogapi_tools import list_dog_breeds, get_dog_breed, list_dog_facts, list_dog_groups, get_dog_group
 
 
-from app.model.chat_model import chat_model
+from model.chat_model import chat_model
 
 
 class DogChatAgent:

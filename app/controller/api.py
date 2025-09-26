@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from pydantic import BaseModel
 from typing import Optional
 from uuid import uuid4
-from app.agents.agent import DogChatAgent
+from agents.agent import DogChatAgent
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -24,7 +24,7 @@ class ChatResponse(BaseModel):
     content: str
     thread_id: str
 
-@app.post("/chat", response_model=ChatResponse)
+@app.post("/api/chat", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest):
     thread_id = request.thread_id or str(uuid4())
     response = agent.invoke(request.content, thread_id=thread_id)

@@ -1,4 +1,4 @@
-from app.agents.agent import DogChatAgent
+from agents.agent import DogChatAgent
 
 
 class CommandLineAgent:
