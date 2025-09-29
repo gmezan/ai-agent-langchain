@@ -14,7 +14,7 @@ terraform {
   backend "azurerm" {
     resource_group_name  = "rg-infra-state"
     storage_account_name = "gmezanterraformghactions"
-    container_name       = "tfstate"
+    container_name       = "ai-agent-langchain"
     key                  = "terraform.tfstate"
     use_oidc             = true
   }
