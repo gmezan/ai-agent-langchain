@@ -3,7 +3,7 @@ resource "random_pet" "rg_name" {
 }
 
 module "resource_group" {
-  source = "git::https://github.com/gmezan/terraform-infra-gh-actions.git//module/azure/rg?ref=main-azure"
+  source   = "git::https://github.com/gmezan/terraform-infra-gh-actions.git//module/azure/rg?ref=main-azure"
   name     = random_pet.rg_name.id
   location = var.location
 }
