@@ -46,7 +46,12 @@ function App() {
     restoreSession()
   }, [])
 
-  const handleSuccess = (userData: User) => { setUser(userData) }
+  const handleSuccess = (userData: User) => { 
+    setUser(userData)
+    // Clear chat history when user signs in (new session)
+    clearMessages()
+    console.log('🧹 Chat history cleared for new user session')
+  }
   const handleLogout = async () => {
     try {
       // Logout from Azure Easy Auth
@@ -54,6 +59,9 @@ function App() {
     } catch (error) {
       console.warn('⚠️ Azure logout failed, but continuing with local logout:', error)
     }
+    // Clear chat history when user signs out
+    clearMessages()
+    console.log('🧹 Chat history cleared on logout')
     setUser(null)
   }
   const [theme, setTheme] = React.useState<'light' | 'dark'>(() => {
