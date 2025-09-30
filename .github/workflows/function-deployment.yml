@@ -1,0 +1,148 @@
+name: Deploy Azure Functions
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'functions/**'
+      - '.github/workflows/function-deployment.yml'
+  workflow_dispatch:
+    inputs:
+      force_deploy:
+        description: 'Force deployment regardless of changes'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: './functions'
+  
+jobs:
+  get-terraform-outputs:
+    runs-on: ubuntu-latest
+    outputs:
+      resource_group_name: ${{ steps.terraform-output.outputs.resource_group_name }}
+      function_app_name: ${{ steps.terraform-output.outputs.function_app_name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure CLI Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: latest
+          terraform_wrapper: false
+
+      - name: Get Terraform outputs
+        id: terraform-output
+        working-directory: ./infra
+        run: |
+          terraform init
+          RESOURCE_GROUP_NAME=$(terraform output -raw resource_group_name)
+          FUNCTION_APP_NAME=$(terraform output -raw function_app_name)
+          echo "resource_group_name=$RESOURCE_GROUP_NAME" >> $GITHUB_OUTPUT
+          echo "function_app_name=$FUNCTION_APP_NAME" >> $GITHUB_OUTPUT
+          echo "Resource Group: $RESOURCE_GROUP_NAME"
+          echo "Function App: $FUNCTION_APP_NAME"
+
+  deploy:
+    needs: get-terraform-outputs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Azure CLI Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Prepare deployment package
+        working-directory: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+        run: |
+          echo "Creating deployment package..."
+          
+          # Create temporary directory for package
+          mkdir -p deployment-package
+          
+          # Copy function files (exclude unnecessary files)
+          cp function_app.py deployment-package/
+          cp host.json deployment-package/
+          cp requirements.txt deployment-package/
+          
+          # Create the zip file
+          cd deployment-package
+          zip -r ../function-app.zip . -x "*.pyc" "__pycache__/*" "local.settings.json" ".git/*" ".vscode/*"
+          
+          echo "Package created successfully"
+          ls -la ../function-app.zip
+
+      - name: Deploy to Azure Functions
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            echo "Deploying to Azure Functions..."
+            echo "Resource Group: ${{ needs.get-terraform-outputs.outputs.resource_group_name }}"
+            echo "Function App: ${{ needs.get-terraform-outputs.outputs.function_app_name }}"
+            
+            az functionapp deployment source config-zip \
+              --resource-group "${{ needs.get-terraform-outputs.outputs.resource_group_name }}" \
+              --name "${{ needs.get-terraform-outputs.outputs.function_app_name }}" \
+              --src "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/function-app.zip"
+
+      - name: Verify deployment
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            echo "Verifying deployment..."
+            
+            # Get function app status
+            STATUS=$(az functionapp show \
+              --resource-group "${{ needs.get-terraform-outputs.outputs.resource_group_name }}" \
+              --name "${{ needs.get-terraform-outputs.outputs.function_app_name }}" \
+              --query "state" \
+              --output tsv)
+            
+            echo "Function App Status: $STATUS"
+            
+            if [ "$STATUS" = "Running" ]; then
+              echo "✅ Deployment successful! Function App is running."
+              
+              # Get the function app URL
+              URL=$(az functionapp show \
+                --resource-group "${{ needs.get-terraform-outputs.outputs.resource_group_name }}" \
+                --name "${{ needs.get-terraform-outputs.outputs.function_app_name }}" \
+                --query "defaultHostName" \
+                --output tsv)
+              
+              echo "🌐 Function App URL: https://$URL"
+            else
+              echo "❌ Deployment may have issues. Function App status: $STATUS"
+              exit 1
+            fi
+
+      - name: Cleanup
+        if: always()
+        working-directory: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+        run: |
+          echo "Cleaning up temporary files..."
+          rm -f function-app.zip
+          rm -rf deployment-package
+          echo "✨ Cleanup complete"

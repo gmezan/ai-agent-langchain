@@ -61,7 +61,6 @@ az functionapp deployment source config-zip \
 
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}Deployment successful!${NC}"
-    echo -e "${GREEN}Function URL: https://$FUNCTION_APP_NAME.azurewebsites.net/api/http_trigger_agent${NC}"
 else
     echo -e "${RED}Deployment failed!${NC}"
     exit 1
