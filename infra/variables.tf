@@ -30,3 +30,9 @@ variable "auth_enabled" {
   type        = bool
   default     = true
 }
+
+variable "deepseek_api_key" {
+  description = "DeepSeek API key for AI model access"
+  type        = string
+  sensitive   = true
+}

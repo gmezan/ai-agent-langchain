@@ -1,0 +1,22 @@
+# Example terraform.tfvars file
+# Copy this to terraform.tfvars and fill in your actual values
+
+# Required: Google OAuth credentials for authentication
+google_client_secret = "your-google-client-secret-here"
+
+# Optional: DeepSeek API key for AI model access
+# If not provided, the Function App will fall back to environment variables
+deepseek_api_key = "your-deepseek-api-key-here"
+
+# Optional: Override default values
+location = "eastus2"
+google_client_id = "275756463705-1q2sp16j401a8eekn2l6oc6mr3fe1ufl.apps.googleusercontent.com"
+
+# Optional: CORS settings for frontend
+allowed_origins = [
+  "http://localhost:5173",
+  "https://gmezan.github.io"
+]
+
+# Optional: Authentication settings
+auth_enabled = true

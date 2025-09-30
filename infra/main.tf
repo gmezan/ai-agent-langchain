@@ -62,6 +62,15 @@ resource "azurerm_key_vault_secret" "google_client_secret" {
   depends_on = [time_sleep.wait_for_rbac]
 }
 
+resource "azurerm_key_vault_secret" "deepseek_api_key" {
+  count        = var.deepseek_api_key != "" ? 1 : 0
+  name         = "deepseek-api-key"
+  value        = var.deepseek_api_key
+  key_vault_id = module.keyvault.keyvault_id
+
+  depends_on = [time_sleep.wait_for_rbac]
+}
+
 resource "azurerm_service_plan" "consumption_plan" {
   name                = random_pet.service_plan_name.id
   location            = var.location
@@ -118,6 +127,8 @@ resource "azurerm_linux_function_app" "function_app" {
   app_settings = {
     "GOOGLE_CLIENT_ID"     = var.google_client_id
     "GOOGLE_CLIENT_SECRET" = "@Microsoft.KeyVault(VaultName=${module.keyvault.keyvault_name};SecretName=${azurerm_key_vault_secret.google_client_secret.name})"
+    "KEYVAULT_NAME"        = module.keyvault.keyvault_name
+    "DEEPSEEK_API_KEY"     = "@Microsoft.KeyVault(VaultName=${module.keyvault.keyvault_name};SecretName=${azurerm_key_vault_secret.deepseek_api_key.name})"
   }
 }
 
