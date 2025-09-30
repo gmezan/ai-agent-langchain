@@ -27,7 +27,7 @@ except Exception as e:
     logger.error(f"Failed to initialize DogChatAgent: {str(e)}")
     raise
 
-@app.function_name(name="ChatApi")
+@app.function_name(name="Chat")
 @app.route(route="chat")
 def chat(req: func.HttpRequest) -> func.HttpResponse:
     start_time = time.time()
