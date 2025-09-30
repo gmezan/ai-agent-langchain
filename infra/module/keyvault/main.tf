@@ -13,16 +13,6 @@ resource "azurerm_key_vault" "keyvault" {
     bypass         = "AzureServices"
   }
 
-  # In module/keyvault/main.tf
-  access_policy {
-    tenant_id = var.tenant_id
-    object_id = var.terraform_principal_id
-
-    secret_permissions = [
-      "Get", "List", "Set", "Delete", "Recover", "Backup", "Restore"
-    ]
-  }
-
   tags = var.tags
 }
 
