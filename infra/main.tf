@@ -130,7 +130,7 @@ resource "azurerm_linux_function_app" "function_app" {
   }
 }
 
-# Role assignment for Function App to read Key Vault secrets
+# Role assignment for Function App to read project Key Vault secrets
 resource "azurerm_role_assignment" "function_app_keyvault_secrets" {
   scope                = module.keyvault.keyvault_id
   role_definition_name = "Key Vault Secrets User"
