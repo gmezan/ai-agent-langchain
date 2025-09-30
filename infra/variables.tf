@@ -14,7 +14,6 @@ variable "google_client_secret" {
   description = "Google OAuth client secret for authentication"
   type        = string
   sensitive   = true
-  default     = "google_client_secret"
 }
 
 variable "allowed_origins" {
