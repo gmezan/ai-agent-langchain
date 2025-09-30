@@ -54,14 +54,6 @@ resource "time_sleep" "wait_for_rbac" {
   create_duration = "60s"
 }
 
-resource "azurerm_key_vault_secret" "google_client_id" {
-  name         = "google-client-id"
-  value        = var.google_client_id
-  key_vault_id = module.keyvault.keyvault_id
-
-  depends_on = [time_sleep.wait_for_rbac]
-}
-
 resource "azurerm_key_vault_secret" "google_client_secret" {
   name         = "google-client-secret"
   value        = var.google_client_secret
@@ -112,7 +104,7 @@ resource "azurerm_linux_function_app" "function_app" {
     default_provider       = "google"
 
     google_v2 {
-      client_id                  = "@Microsoft.KeyVault(VaultName=${module.keyvault.keyvault_name};SecretName=${azurerm_key_vault_secret.google_client_id.name})"
+      client_id                  = var.google_client_id
       client_secret_setting_name = "GOOGLE_CLIENT_SECRET"
       allowed_audiences          = []
       login_scopes               = ["openid", "profile", "email"]
@@ -124,7 +116,7 @@ resource "azurerm_linux_function_app" "function_app" {
   }
 
   app_settings = {
-    "GOOGLE_CLIENT_ID"     = "@Microsoft.KeyVault(VaultName=${module.keyvault.keyvault_name};SecretName=${azurerm_key_vault_secret.google_client_id.name})"
+    "GOOGLE_CLIENT_ID"     = var.google_client_id
     "GOOGLE_CLIENT_SECRET" = "@Microsoft.KeyVault(VaultName=${module.keyvault.keyvault_name};SecretName=${azurerm_key_vault_secret.google_client_secret.name})"
   }
 }

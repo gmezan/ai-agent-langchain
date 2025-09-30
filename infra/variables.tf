@@ -7,8 +7,7 @@ variable "location" {
 variable "google_client_id" {
   description = "Google OAuth client ID for authentication"
   type        = string
-  sensitive   = true
-  default     = "google_client_id"
+  default     = "275756463705-1q2sp16j401a8eekn2l6oc6mr3fe1ufl.apps.googleusercontent.com"
 }
 
 variable "google_client_secret" {
