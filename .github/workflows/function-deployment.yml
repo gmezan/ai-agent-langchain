@@ -116,19 +116,21 @@ jobs:
             echo "Zip file exists, size: $(du -h function-app.zip)"
             echo "Zip file contents:"
             unzip -l function-app.zip
+            
+            # Copy to a simpler path to avoid any issues
+            cp function-app.zip /tmp/deploy.zip
+            echo "Copied to /tmp/deploy.zip"
+            ls -la /tmp/deploy.zip
           else
             echo "ERROR: function-app.zip not found!"
             exit 1
           fi
           
-          # Deploy using Azure CLI with full path
-          FULL_PATH="$(realpath function-app.zip)"
-          echo "Full path to zip: $FULL_PATH"
-          
+          # Try deployment with the copied file
           az functionapp deployment source config-zip \
             --resource-group "${{ needs.get-terraform-outputs.outputs.resource_group_name }}" \
             --name "${{ needs.get-terraform-outputs.outputs.function_app_name }}" \
-            --src "$FULL_PATH" \
+            --src /tmp/deploy.zip \
             --verbose
 
       - name: Verify deployment
