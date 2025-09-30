@@ -48,12 +48,18 @@ module "keyvault" {
   terraform_principal_id = data.azurerm_client_config.current.object_id
 }
 
+# Wait for RBAC permissions to propagate before creating secrets
+resource "time_sleep" "wait_for_rbac" {
+  depends_on      = [module.keyvault]
+  create_duration = "60s"
+}
+
 resource "azurerm_key_vault_secret" "google_client_id" {
   name         = "google-client-id"
   value        = var.google_client_id
   key_vault_id = module.keyvault.keyvault_id
 
-  depends_on = [module.keyvault]
+  depends_on = [time_sleep.wait_for_rbac]
 }
 
 resource "azurerm_key_vault_secret" "google_client_secret" {
@@ -61,7 +67,7 @@ resource "azurerm_key_vault_secret" "google_client_secret" {
   value        = var.google_client_secret
   key_vault_id = module.keyvault.keyvault_id
 
-  depends_on = [module.keyvault]
+  depends_on = [time_sleep.wait_for_rbac]
 }
 
 resource "azurerm_service_plan" "consumption_plan" {

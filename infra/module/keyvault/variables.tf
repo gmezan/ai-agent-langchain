@@ -1,12 +1,12 @@
 variable "keyvault_name" {
   type        = string
   description = "Name of the Key Vault"
-  
+
   validation {
     condition     = length(var.keyvault_name) >= 3 && length(var.keyvault_name) <= 24
     error_message = "Key Vault name must be between 3 and 24 characters."
   }
-  
+
   validation {
     condition     = can(regex("^[a-zA-Z0-9-]+$", var.keyvault_name))
     error_message = "Key Vault name can only contain alphanumeric characters and hyphens."
