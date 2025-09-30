@@ -106,10 +106,15 @@ jobs:
             echo "Resource Group: ${{ needs.get-terraform-outputs.outputs.resource_group_name }}"
             echo "Function App: ${{ needs.get-terraform-outputs.outputs.function_app_name }}"
             
+            # Get absolute path to zip file
+            ZIP_PATH=$(pwd)/function-app.zip
+            echo "Zip file path: $ZIP_PATH"
+            ls -la "$ZIP_PATH"
+            
             az functionapp deployment source config-zip \
               --resource-group "${{ needs.get-terraform-outputs.outputs.resource_group_name }}" \
               --name "${{ needs.get-terraform-outputs.outputs.function_app_name }}" \
-              --src "./function-app.zip"
+              --src "$ZIP_PATH"
 
       - name: Verify deployment
         uses: azure/cli@v2
