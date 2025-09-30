@@ -121,19 +121,16 @@ resource "azurerm_linux_function_app" "function_app" {
   }
 }
 
-# Data source to get the Function App's managed identity
-data "azurerm_linux_function_app" "function_app_data" {
-  name                = azurerm_linux_function_app.function_app.name
-  resource_group_name = azurerm_linux_function_app.function_app.resource_group_name
-
-  depends_on = [azurerm_linux_function_app.function_app]
-}
-
 # Role assignment for Function App to read Key Vault secrets
 resource "azurerm_role_assignment" "function_app_keyvault_secrets" {
   scope                = module.keyvault.keyvault_id
   role_definition_name = "Key Vault Secrets User"
-  principal_id         = data.azurerm_linux_function_app.function_app_data.identity[0].principal_id
+  principal_id         = azurerm_linux_function_app.function_app.identity[0].principal_id
+
+  depends_on = [
+    azurerm_linux_function_app.function_app,
+    module.keyvault
+  ]
 }
 
 resource "azurerm_function_app_function" "example_function" {
