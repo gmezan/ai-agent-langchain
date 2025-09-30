@@ -5,6 +5,9 @@ resource "azurerm_key_vault" "keyvault" {
   tenant_id           = var.tenant_id
   sku_name            = "standard"
 
+  # Enable full RBAC mode (deprecated warning but still required for pure RBAC)
+  rbac_authorization_enabled = true
+  
   purge_protection_enabled   = false
   soft_delete_retention_days = 7
 
