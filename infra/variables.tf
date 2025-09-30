@@ -8,12 +8,14 @@ variable "google_client_id" {
   description = "Google OAuth client ID for authentication"
   type        = string
   sensitive   = true
+  default     = "google_client_id"
 }
 
 variable "google_client_secret" {
   description = "Google OAuth client secret for authentication"
   type        = string
   sensitive   = true
+  default     = "google_client_secret"
 }
 
 variable "allowed_origins" {
