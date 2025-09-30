@@ -4,9 +4,15 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'infra/**'
+      - '.github/workflows/azure-plan-apply.yml'
   pull_request:
     branches:
       - main
+    paths:
+      - 'infra/**'
+      - '.github/workflows/azure-plan-apply.yml'
 
 #Special permissions required for OIDC authentication
 permissions:
