@@ -46,6 +46,25 @@ cp function_app.py "$TEMP_DIR/"
 cp host.json "$TEMP_DIR/"
 cp requirements.txt "$TEMP_DIR/"
 
+# Copy all source directories
+cp -r agents/ "$TEMP_DIR/" 2>/dev/null || true
+cp -r apis/ "$TEMP_DIR/" 2>/dev/null || true
+cp -r memory/ "$TEMP_DIR/" 2>/dev/null || true
+cp -r model/ "$TEMP_DIR/" 2>/dev/null || true
+cp -r tools/ "$TEMP_DIR/" 2>/dev/null || true
+cp -r utils/ "$TEMP_DIR/" 2>/dev/null || true
+
+# Copy .python_packages directory if it exists
+if [ -d ".python_packages" ]; then
+    cp -r .python_packages "$TEMP_DIR/"
+    echo -e "${GREEN}.python_packages directory copied to deployment package${NC}"
+elif [ -f ".python_packages" ]; then
+    cp .python_packages "$TEMP_DIR/"
+    echo -e "${GREEN}.python_packages file copied to deployment package${NC}"
+else
+    echo -e "${YELLOW}Warning: .python_packages not found${NC}"
+fi
+
 # Create the zip file
 cd "$TEMP_DIR"
 zip -r function-app.zip . -x "*.pyc" "__pycache__/*" "local.settings.json" ".git/*" ".vscode/*"
