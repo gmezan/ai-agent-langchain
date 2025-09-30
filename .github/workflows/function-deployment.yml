@@ -108,6 +108,7 @@ jobs:
             echo "Function App: ${{ needs.get-terraform-outputs.outputs.function_app_name }}"
             
             ls
+            ls -la ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
 
             az functionapp deployment source config-zip \
               --resource-group "${{ needs.get-terraform-outputs.outputs.resource_group_name }}" \
