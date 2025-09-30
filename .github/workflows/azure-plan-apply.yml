@@ -28,6 +28,7 @@ env:
   AZ_TF_RG: "${{ secrets.AZ_TF_RG }}"
   AZ_TF_SA: "${{ secrets.AZ_TF_SA }}"
   GOOGLE_CLIENT_SECRET: "${{ secrets.GOOGLE_CLIENT_SECRET }}"
+  DEEPSEEK_API_KEY: "${{ secrets.DEEPSEEK_API_KEY }}"
 
 
 jobs:
@@ -68,9 +69,10 @@ jobs:
       id: tf-plan
       env:
         GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+        DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
       run: |
         export exitcode=0
-        terraform plan -detailed-exitcode -no-color -var="google_client_secret=$GOOGLE_CLIENT_SECRET" -out tfplan || export exitcode=$?
+        terraform plan -detailed-exitcode -no-color -var="google_client_secret=$GOOGLE_CLIENT_SECRET" -var="deepseek_api_key=$DEEPSEEK_API_KEY" -out tfplan || export exitcode=$?
 
         echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
         
@@ -183,5 +185,6 @@ jobs:
     - name: Terraform Apply
       env:
         GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-      run: terraform apply -auto-approve -var="google_client_secret=$GOOGLE_CLIENT_SECRET" tfplan
+        DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+      run: terraform apply -auto-approve -var="google_client_secret=$GOOGLE_CLIENT_SECRET" -var="deepseek_api_key=$DEEPSEEK_API_KEY" tfplan
       working-directory: ./infra
