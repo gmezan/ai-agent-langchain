@@ -19,7 +19,7 @@ variable "google_client_secret" {
 variable "allowed_origins" {
   description = "List of allowed origins for CORS"
   type        = list(string)
-  default     = [
+  default = [
     "http://localhost:5173",
     "https://gmezan.github.io"
   ]
