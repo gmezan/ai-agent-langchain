@@ -140,17 +140,17 @@ resource "azurerm_function_app_function" "example_function" {
   name            = replace(random_pet.function_name.id, "-", "")
   function_app_id = azurerm_linux_function_app.function_app.id
   language        = "Python"
-  
+
   file {
     name    = "function_app.py"
     content = file("${path.module}/../functions/function_app.py")
   }
-  
+
   file {
     name    = "requirements.txt"
     content = file("${path.module}/../functions/requirements.txt")
   }
-  
+
   test_data = jsonencode({
     "name" = "Azure"
   })
@@ -163,8 +163,8 @@ resource "azurerm_function_app_function" "example_function" {
           "get",
           "post",
         ]
-        "name" = "req"
-        "type" = "httpTrigger"
+        "name"  = "req"
+        "type"  = "httpTrigger"
         "route" = "api/chat"
       },
       {
