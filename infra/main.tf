@@ -27,14 +27,14 @@ module "resource_group" {
 resource "azurerm_storage_account" "function_storage" {
   name                     = replace(random_pet.storage_name.id, "-", "")
   resource_group_name      = module.resource_group.name
-  location                 = module.resource_group.location
+  location                 = var.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
 }
 
 resource "azurerm_service_plan" "consumption_plan" {
   name                = random_pet.service_plan_name.id
-  location            = module.resource_group.location
+  location            = var.location
   resource_group_name = module.resource_group.name
   os_type             = "Linux"
   sku_name            = "Y1"
@@ -42,7 +42,7 @@ resource "azurerm_service_plan" "consumption_plan" {
 
 resource "azurerm_linux_function_app" "function_app" {
   name                = random_pet.function_app_name.id
-  location            = module.resource_group.location
+  location            = var.location
   resource_group_name = module.resource_group.name
   service_plan_id     = azurerm_service_plan.consumption_plan.id
 
