@@ -54,20 +54,19 @@ resource "time_sleep" "wait_for_rbac" {
   create_duration = "60s"
 }
 
+# Rotate secrets in application Key Vault
 resource "azurerm_key_vault_secret" "google_client_secret" {
   name         = "google-client-secret"
-  value        = var.google_client_secret
+  value        = local.google_client_secret_value
   key_vault_id = module.keyvault.keyvault_id
-
-  depends_on = [time_sleep.wait_for_rbac]
+  depends_on   = [time_sleep.wait_for_rbac]
 }
 
 resource "azurerm_key_vault_secret" "deepseek_api_key" {
   name         = "deepseek-api-key"
-  value        = var.deepseek_api_key
+  value        = local.deepseek_api_key_value
   key_vault_id = module.keyvault.keyvault_id
-
-  depends_on = [time_sleep.wait_for_rbac]
+  depends_on   = [time_sleep.wait_for_rbac]
 }
 
 resource "azurerm_service_plan" "consumption_plan" {

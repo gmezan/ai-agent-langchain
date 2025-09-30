@@ -10,11 +10,7 @@ variable "google_client_id" {
   default     = "275756463705-1q2sp16j401a8eekn2l6oc6mr3fe1ufl.apps.googleusercontent.com"
 }
 
-variable "google_client_secret" {
-  description = "Google OAuth client secret for authentication"
-  type        = string
-  sensitive   = true
-}
+# google_client_secret is read from central Key Vault, no variable needed
 
 variable "allowed_origins" {
   description = "List of allowed origins for CORS"
@@ -31,8 +27,12 @@ variable "auth_enabled" {
   default     = true
 }
 
-variable "deepseek_api_key" {
-  description = "DeepSeek API key for AI model access"
+variable "central_keyvault_name" {
+  description = "Name of the central Key Vault containing secrets"
   type        = string
-  sensitive   = true
+}
+
+variable "central_keyvault_resource_group" {
+  description = "Resource group of the central Key Vault"
+  type        = string
 }
