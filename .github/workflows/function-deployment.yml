@@ -87,9 +87,9 @@ jobs:
           mkdir -p deployment-package
           
           # Copy function files (exclude unnecessary files)
-          cp functions/function_app.py deployment-package/
-          cp functions/host.json deployment-package/
-          cp functions/requirements.txt deployment-package/
+          cp function_app.py deployment-package/
+          cp host.json deployment-package/
+          cp requirements.txt deployment-package/
           
           # Create the zip file
           cd deployment-package
@@ -107,10 +107,12 @@ jobs:
             echo "Resource Group: ${{ needs.get-terraform-outputs.outputs.resource_group_name }}"
             echo "Function App: ${{ needs.get-terraform-outputs.outputs.function_app_name }}"
             
+            ls
+
             az functionapp deployment source config-zip \
               --resource-group "${{ needs.get-terraform-outputs.outputs.resource_group_name }}" \
               --name "${{ needs.get-terraform-outputs.outputs.function_app_name }}" \
-              --src "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/function-app.zip"
+              --src function-app.zip"
 
       - name: Verify deployment
         uses: azure/cli@v2
