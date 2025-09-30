@@ -4,8 +4,8 @@
 # Make sure you have Azure CLI installed and are logged in
 
 # Configuration - Update these values
-RESOURCE_GROUP="deleteme"
-FUNCTION_APP_NAME="mytestfunction001gmezan"
+RESOURCE_GROUP="rg-warm-bluebird"
+FUNCTION_APP_NAME="fagmezan-enabling-ewe"
 #SUBSCRIPTION="your-subscription-id"
 
 # Colors for output
