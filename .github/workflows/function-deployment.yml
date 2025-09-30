@@ -87,9 +87,9 @@ jobs:
           mkdir -p deployment-package
           
           # Copy function files (exclude unnecessary files)
-          cp function_app.py deployment-package/
-          cp host.json deployment-package/
-          cp requirements.txt deployment-package/
+          cp functions/function_app.py deployment-package/
+          cp functions/host.json deployment-package/
+          cp functions/requirements.txt deployment-package/
           
           # Create the zip file
           cd deployment-package
