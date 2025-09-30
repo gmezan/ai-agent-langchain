@@ -63,7 +63,6 @@ resource "azurerm_key_vault_secret" "google_client_secret" {
 }
 
 resource "azurerm_key_vault_secret" "deepseek_api_key" {
-  count        = var.deepseek_api_key != "" ? 1 : 0
   name         = "deepseek-api-key"
   value        = var.deepseek_api_key
   key_vault_id = module.keyvault.keyvault_id
