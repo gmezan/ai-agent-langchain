@@ -98,23 +98,31 @@ jobs:
           ls -la ../function-app.zip
 
       - name: Deploy to Azure Functions
-        uses: azure/cli@v2
-        with:
-          azcliversion: latest
-          inlineScript: |
-            echo "Deploying to Azure Functions..."
-            echo "Resource Group: ${{ needs.get-terraform-outputs.outputs.resource_group_name }}"
-            echo "Function App: ${{ needs.get-terraform-outputs.outputs.function_app_name }}"
-            
-            # Get absolute path to zip file
-            ZIP_PATH=$(pwd)/function-app.zip
-            echo "Zip file path: $ZIP_PATH"
-            ls -la "$ZIP_PATH"
-            
-            az functionapp deployment source config-zip \
-              --resource-group "${{ needs.get-terraform-outputs.outputs.resource_group_name }}" \
-              --name "${{ needs.get-terraform-outputs.outputs.function_app_name }}" \
-              --src "$ZIP_PATH"
+        run: |
+          echo "Deploying to Azure Functions..."
+          echo "Resource Group: ${{ needs.get-terraform-outputs.outputs.resource_group_name }}"
+          echo "Function App: ${{ needs.get-terraform-outputs.outputs.function_app_name }}"
+          
+          # Debug: Check current directory and files
+          echo "Current directory: $(pwd)"
+          echo "Files in current directory:"
+          ls -la
+          
+          # Check if zip file exists and its size
+          if [ -f "function-app.zip" ]; then
+            echo "Zip file exists, size: $(du -h function-app.zip)"
+            echo "Zip file contents:"
+            unzip -l function-app.zip
+          else
+            echo "ERROR: function-app.zip not found!"
+            exit 1
+          fi
+          
+          # Deploy using Azure CLI
+          az functionapp deployment source config-zip \
+            --resource-group "${{ needs.get-terraform-outputs.outputs.resource_group_name }}" \
+            --name "${{ needs.get-terraform-outputs.outputs.function_app_name }}" \
+            --src "function-app.zip"
 
       - name: Verify deployment
         uses: azure/cli@v2
