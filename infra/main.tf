@@ -127,7 +127,7 @@ resource "azurerm_linux_function_app" "function_app" {
 data "azurerm_linux_function_app" "function_app_data" {
   name                = azurerm_linux_function_app.function_app.name
   resource_group_name = azurerm_linux_function_app.function_app.resource_group_name
-  
+
   depends_on = [azurerm_linux_function_app.function_app]
 }
 
