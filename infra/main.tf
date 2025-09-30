@@ -127,7 +127,7 @@ resource "azurerm_linux_function_app" "function_app" {
 resource "azurerm_role_assignment" "function_app_keyvault_secrets" {
   scope                = module.keyvault.keyvault_id
   role_definition_name = "Key Vault Secrets User"
-  principal_id         = azurerm_linux_function_app.function_app.identity[0].principal_id
+  principal_id         = azurerm_linux_function_app.function_app.identity.0.principal_id
 }
 
 resource "azurerm_function_app_function" "example_function" {
