@@ -21,6 +21,8 @@ permissions:
 
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: './functions'
+  AZ_TF_RG: "${{ secrets.AZ_TF_RG }}"
+  AZ_TF_SA: "${{ secrets.AZ_TF_SA }}"
   
 jobs:
   get-terraform-outputs:
@@ -49,7 +51,7 @@ jobs:
         id: terraform-output
         working-directory: ./infra
         run: |
-          terraform init
+          terraform init -backend-config="resource_group_name=$AZ_TF_RG" -backend-config="storage_account_name=$AZ_TF_SA"
           RESOURCE_GROUP_NAME=$(terraform output -raw resource_group_name)
           FUNCTION_APP_NAME=$(terraform output -raw function_app_name)
           echo "resource_group_name=$RESOURCE_GROUP_NAME" >> $GITHUB_OUTPUT
