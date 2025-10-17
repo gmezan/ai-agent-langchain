@@ -169,6 +169,11 @@ Terraform automatically provisions: Azure Functions, Key Vault, App Service Plan
 ![Frontend Demo 1](./assets/frontend1.png)
 ![Frontend Demo 2](./assets/frontend2.png)
 
+## Chat Demo
+https://github.com/user-attachments/assets/ad168dfa-6ecb-4cef-8127-519313ac5faa
+
+
+
 ## Technologies
 - **AI/ML:** [LangChain](https://langchain.com/) for agent orchestration, [DeepSeek](https://deepseek.com/) LLM for natural language processing
 - **Cloud:** [Azure Functions](https://azure.microsoft.com/en-us/services/functions/) for serverless backend, [GitHub Pages](https://pages.github.com/) for frontend hosting
