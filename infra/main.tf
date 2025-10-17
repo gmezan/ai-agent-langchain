@@ -67,6 +67,11 @@ resource "azurerm_key_vault_secret" "deepseek_api_key" {
   value        = local.deepseek_api_key_value
   key_vault_id = module.keyvault.keyvault_id
   depends_on   = [time_sleep.wait_for_rbac]
+
+  lifecycle {
+    ignore_changes  = [value]
+    prevent_destroy = false
+  }
 }
 
 resource "azurerm_service_plan" "consumption_plan" {
