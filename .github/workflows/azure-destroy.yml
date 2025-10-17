@@ -58,7 +58,7 @@ jobs:
         CENTRAL_KEYVAULT_NAME: ${{ secrets.CENTRAL_KEYVAULT_NAME }}
       run: |
         export exitcode=0
-        terraform plan -destroy -detailed-exitcode -no-color -var="central_keyvault_name=$CENTRAL_KEYVAULT_NAME" -out tfplan || export exitcode=$?
+        terraform plan -destroy -detailed-exitcode -no-color -var="central_keyvault_name=$CENTRAL_KEYVAULT_NAME" -var="central_keyvault_resource_group=$AZ_TF_RG" -out tfplan || export exitcode=$?
 
         echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
         
@@ -171,5 +171,5 @@ jobs:
     - name: Terraform Apply Destroy
       env:
         CENTRAL_KEYVAULT_NAME: ${{ secrets.CENTRAL_KEYVAULT_NAME }}
-      run: terraform apply -auto-approve -var="central_keyvault_name=$CENTRAL_KEYVAULT_NAME" tfplan
+      run: terraform apply -auto-approve -var="central_keyvault_name=$CENTRAL_KEYVAULT_NAME" -var="central_keyvault_resource_group=$AZ_TF_RG" tfplan
       working-directory: ./infra
